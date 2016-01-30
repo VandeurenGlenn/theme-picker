@@ -30,7 +30,7 @@ Example:
     <theme-loader themes="{{themes}}"></theme-loader>
 
     <template is="dom-repeat" items="[[themes]]">
-      <theme-picker-item item="[[item]]"></theme-picker-item>
+      <theme-picker-item item="[[item]]" on-theme-item-select="_onThemeItemSelect"></theme-picker-item>
     </template>
   </template>
 
@@ -91,9 +91,13 @@ Example:
         }
       }.bind(this));
     },
-
-    _handleTap: function() {
-      console.log(event);
+    
+    /**
+     * @event {string} selected theme
+     */
+    _onThemeItemSelect: function(e) {
+      this.selected = e.detail.name;
+      this.fire('selected-change', this.selected);
     }
 
   });

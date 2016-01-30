@@ -10,6 +10,11 @@
       }
       :host[opened] img {
         z-index: 1;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
       }
       :host[opened] {
         position: fixed;
@@ -45,6 +50,7 @@
         margin: 0 !important;
       }
       img {
+        pointer-events: all;
         cursor: pointer;
       }
       div.actions {
@@ -74,18 +80,18 @@
         [[item.name]]
       </header>
       <!-- <span class="flex"> -->
-      <img src="[[_computePreview(item.preview)]]" width="128" height="128" on-tap="_handleTap"/>
+      <img src="[[_computePreview(item.preview)]]" width="[[imgSize]]" height="[[imgSize]]" on-tap="_handleTap"/>
       <!-- </span> -->
       <template is="dom-if" if="[[opened]]" restamp="true">
         <div class="overlay" style="[[_computeOverlayStyle(item)]]"></div>
         <div class="bar">
-          <paper-icon-button icon="trendystore-icons:chevron-left"></paper-icon-button>
+          <paper-icon-button icon="trendystore-icons:chevron-left" on-tap="close"></paper-icon-button>
           <span class="flex"></span>
           <span class="description">[[item.description]]</span>
           <span class="flex"></span>
         </div>
         <div class="actions">
-          <paper-button class="flex use" raised>use</paper-button>
+          <paper-button class="flex use" raised on-tap="select">use</paper-button>
         </div>
       </template>
     </div>
@@ -107,7 +113,18 @@
         componentsPath: {
           type: String,
           value: 'bower_components/theme-picker/'
+        },
+
+        img: HTMLElement,
+
+        imgSize: {
+          type: Number,
+          value: 256
         }
+      },
+
+      attached: function() {
+        this.img = this.querySelector('img');
       },
 
       _computeOverlayStyle: function(item) {
@@ -121,15 +138,29 @@
       },
 
       _handleTap: function() {
-        this.opened = !this.opened;
         if (this.opened) {
-          // TODO: Add targetHost
-          var size = this.parentNode.dataHost._rootDataHost.getBoundingClientRect().width;
-          // console.log(this.dataHost.getBoundingClientRect());
-          var img = this.querySelector('img');
-          img.height = size;
-          img.width = size;
+          this.close();
         }
+        if (!this.opened) {
+          this.open();
+        }
+      },
+
+      close: function() {
+        this.opened = false;
+        this.img.width = this.imgSize;
+        this.img.height = this.imgSize;
+      },
+
+      open: function() {
+        this.opened = true;
+        var size = this.parentNode.dataHost._rootDataHost.getBoundingClientRect().width;
+        this.img.height = size;
+        this.img.width = size;
+      },
+
+      select: function() {
+        this.fire('theme-item-select', this.item);
       }
     });
   </script>
