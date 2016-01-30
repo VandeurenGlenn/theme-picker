@@ -1,0 +1,101 @@
+<!--
+@license
+Copyright (c) 2016 Glenn Vandeuren. All rights reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="theme-loader.html">
+<link rel="import" href="theme-picker-item.html">
+
+<!--
+An theme-picker element.
+
+Example:
+
+    <theme-picker></theme-picker>
+
+@group Theme Elements
+@element theme-picker
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="theme-picker">
+
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+    </style>
+    <theme-loader themes="{{themes}}"></theme-loader>
+
+    <template is="dom-repeat" items="[[themes]]">
+      <theme-picker-item item="[[item]]"></theme-picker-item>
+    </template>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'theme-picker',
+
+    properties: {
+
+      /**
+       *  The theme used
+       *
+       * @type {{name: string, preview: string, primary-color: String, dark-primary-color}}
+       */
+      theme: {
+        type: Object,
+        notify: true
+      },
+
+      themes: {
+        type: Array,
+        value: []
+      },
+
+      selected: {
+        type: String,
+        notify: true
+      }
+
+    },
+
+    observers: [
+      '_setSelected(selected, themes)'
+    ],
+
+    /**
+     * @param {string} selected The selected theme.
+     * @param {array} themes An array of themes to search in.
+     * @return {string} theme.
+     */
+    _setSelected: function(selected, themes) {
+      var options = this.querySelectorAll('option');
+      for (var i = 0; i < options.length; i++) {
+        if (options[i].value === selected) {
+          options[i].setAttribute('selected', '');
+        } else {
+          options[i].removeAttribute('selected');
+        }
+      }
+      themes.forEach(function(theme) {
+        if (theme.name === selected) {
+          this.theme = theme;
+          return this.theme;
+        }
+      }.bind(this));
+    },
+
+    _handleTap: function() {
+      console.log(event);
+    }
+
+  });
+
+</script>

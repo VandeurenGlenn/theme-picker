@@ -1,0 +1,131 @@
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<dom-module id="theme-picker-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+        cursor: default;
+      }
+      :host[opened] img {
+        z-index: 1;
+      }
+      :host[opened] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        left: 0;
+      }
+      :host[opened] .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        /*background: rgba(0, 0, 0, 0.98);*/
+      }
+      :host[opened] div.bar {
+        /*transform: translateY(150px);*/
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        padding: 0 56px 0 16px;
+        height: 64px;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.35);
+      }
+      paper-icon-button {
+        margin: 0 !important;
+      }
+      img {
+        cursor: pointer;
+      }
+      div.actions {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        padding: 8px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        box-sizing: border-box;
+      }
+      .vertical {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+      }
+      .flex {
+        @apply(--layout-flex);
+      }
+      .use {
+        background: rgba(0, 0, 0, 0.35);
+      }
+    </style>
+    <div class="vertical">
+      <header>
+        [[item.name]]
+      </header>
+      <!-- <span class="flex"> -->
+      <img src="[[_computePreview(item.preview)]]" width="128" height="128" on-tap="_handleTap"/>
+      <!-- </span> -->
+      <template is="dom-if" if="[[opened]]" restamp="true">
+        <div class="overlay" style="[[_computeOverlayStyle(item)]]"></div>
+        <div class="bar">
+          <paper-icon-button icon="trendystore-icons:chevron-left"></paper-icon-button>
+          <span class="flex"></span>
+          <span class="description">[[item.description]]</span>
+          <span class="flex"></span>
+        </div>
+        <div class="actions">
+          <paper-button class="flex use" raised>use</paper-button>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'theme-picker-item',
+
+      properties: {
+
+        item: Object,
+
+        opened: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+
+      _computeOverlayStyle: function(item) {
+        return 'background:' + item['dark-primary-color'] + '!important';
+      },
+
+      _computePreview: function(img) {
+        if (img) {
+          return 'elements/theme-picker/' + img;
+        }
+      },
+
+      _handleTap: function() {
+        this.opened = !this.opened;
+        if (this.opened) {
+          // TODO: Add targetHost
+          var size = this.parentNode.dataHost._rootDataHost.getBoundingClientRect().width;
+          // console.log(this.dataHost.getBoundingClientRect());
+          var img = this.querySelector('img');
+          img.height = size;
+          img.width = size;
+        }
+      }
+    });
+  </script>
+</dom-module>

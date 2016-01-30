@@ -1,0 +1,37 @@
+
+  <script>
+    Polymer({
+      is: 'theme-loader',
+
+      properties: {
+        themes: {
+          type: Array,
+          notify: true
+        },
+
+        componentsPath: {
+          type: String,
+          value: 'elements/theme-picker/'
+        }
+      },
+
+      attached: function() {
+        this._load(function(response) {
+          this.set('themes', JSON.parse(response));
+        }.bind(this));
+      },
+
+      _load: function(callback) {
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType('application/json');
+        var url = this.componentsPath + 'themes.json';
+        xobj.open('GET', url, true); // Replace 'my_data' with the path to your file
+        xobj.onreadystatechange = function() {
+          if (xobj.readyState === 4 && xobj.status === 200) {
+            return callback(xobj.responseText);
+          }
+        };
+        xobj.send(null);
+      }
+    });
+  </script>
