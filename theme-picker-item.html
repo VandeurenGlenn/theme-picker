@@ -102,6 +102,11 @@
           type: Boolean,
           value: false,
           reflectToAttribute: true
+        },
+
+        componentsPath: {
+          type: String,
+          value: 'bower_components/theme-picker/'
         }
       },
 
@@ -111,7 +116,7 @@
 
       _computePreview: function(img) {
         if (img) {
-          return 'elements/theme-picker/' + img;
+          return this.componentsPath + img;
         }
       },
 
